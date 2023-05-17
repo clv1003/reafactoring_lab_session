@@ -249,42 +249,18 @@ public class Network {
 			Writer report) {
 		assert consistentNetwork() & hasWorkstation(workstation);
 
-		try {
-			report.write("'");
-			report.write(workstation);
-			report.write("' requests printing of '");
-			report.write(document);
-			report.write("' on '");
-			report.write(printer);
-			report.write("' ...\n");
-		} catch (IOException exc) {
-			// just ignore
-		}
+		logging(workstation, document, printer, report);
 
 		boolean result = false;
 		Node startNode, currentNode;
 		Packet packet = new Packet(document, workstation, printer);
 
 		startNode = (Node) workstations_.get(workstation);
-
-		try {
-			report.write("\tNode '");
-			report.write(startNode.name_);
-			report.write("' passes packet on.\n");
-			report.flush();
-		} catch (IOException exc) {
-			// just ignore
-		}
+		logging(report, startNode);
 		currentNode = startNode.nextNode_;
+		
 		while ((!packet.destination_.equals(currentNode.name_)) & (!packet.origin_.equals(currentNode.name_))) {
-			try {
-				report.write("\tNode '");
-				report.write(currentNode.name_);
-				report.write("' passes packet on.\n");
-				report.flush();
-			} catch (IOException exc) {
-				// just ignore
-			}
+			logging(report, currentNode);
 			currentNode = currentNode.nextNode_;
 		}
 
@@ -301,6 +277,31 @@ public class Network {
 		}
 
 		return result;
+	}
+
+	private void logging(Writer report, Node startNode) {
+		try {
+			report.write("\tNode '");
+			report.write(startNode.name_);
+			report.write("' passes packet on.\n");
+			report.flush();
+		} catch (IOException exc) {
+			// just ignore 
+		}
+	}
+
+	private void logging(String workstation, String document, String printer, Writer report) {
+		try {
+			report.write("'");
+			report.write(workstation);
+			report.write("' requests printing of '");
+			report.write(document);
+			report.write("' on '");
+			report.write(printer);
+			report.write("' ...\n");
+		} catch (IOException exc) {
+			// just ignore
+		}
 	}
 
 	private boolean printDocument(Node printer, Packet document, Writer report) {
