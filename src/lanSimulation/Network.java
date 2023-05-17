@@ -178,7 +178,7 @@ public class Network {
 		// all verifications succeedeed
 		return true;
 	}
-
+	
 	/**
 	 * The #receiver is requested to broadcast a message to all nodes. Therefore
 	 * #receiver sends a special broadcast packet across the token ring network,
@@ -256,11 +256,11 @@ public class Network {
 		Packet packet = new Packet(document, workstation, printer);
 
 		startNode = (Node) workstations_.get(workstation);
-		logging(report, startNode);
+		startNode.logging(report, this);
 		currentNode = startNode.nextNode_;
 		
 		while ((!packet.destination_.equals(currentNode.name_)) & (!packet.origin_.equals(currentNode.name_))) {
-			logging(report, currentNode);
+			currentNode.logging(report, this);
 			currentNode = currentNode.nextNode_;
 		}
 
@@ -277,17 +277,6 @@ public class Network {
 		}
 
 		return result;
-	}
-
-	private void logging(Writer report, Node startNode) {
-		try {
-			report.write("\tNode '");
-			report.write(startNode.name_);
-			report.write("' passes packet on.\n");
-			report.flush();
-		} catch (IOException exc) {
-			// just ignore 
-		}
 	}
 
 	private void logging(String workstation, String document, String printer, Writer report) {
