@@ -327,25 +327,13 @@ public class Network {
 						}
 						title = document.message_.substring(startPos + 6, endPos);
 					}
-					report.write("\tAccounting -- author = '");
-					report.write(author);
-					report.write("' -- title = '");
-					report.write(title);
-					report.write("'\n");
-					report.write(">>> Postscript job delivered.\n\n");
-					report.flush();
+					accounting(report, author, title, ">>> Postscript job delivered.\n\n");
 				} else {
 					title = "ASCII DOCUMENT";
 					if (document.message_.length() >= 16) {
 						author = document.message_.substring(8, 16);
 					}
-					report.write("\tAccounting -- author = '");
-					report.write(author);
-					report.write("' -- title = '");
-					report.write(title);
-					report.write("'\n");
-					report.write(">>> ASCII Print job delivered.\n\n");
-					report.flush();
+					accounting(report, author, title, ">>> ASCII Print job delivered.\n\n");
 				}
 			} catch (IOException exc) {
 				// just ignore
@@ -360,6 +348,16 @@ public class Network {
 			}
 			return false;
 		}
+	}
+
+	private void accounting(Writer report, String author, String title, String message) throws IOException {
+		report.write("\tAccounting -- author = '");
+		report.write(author);
+		report.write("' -- title = '");
+		report.write(title);
+		report.write("'\n");
+		report.write(message);
+		report.flush();
 	}
 
 	/**
