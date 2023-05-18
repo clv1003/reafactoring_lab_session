@@ -108,7 +108,7 @@ public class Node {
 		assert network.isInitialized();
 		Node currentNode = this;
 		do {
-			network.send(buf, currentNode);
+			currentNode.send(buf, network);
 			buf.append(" -> ");
 			currentNode = currentNode.nextNode_;
 		} while (currentNode != this);
@@ -131,7 +131,7 @@ public class Node {
 		buf.append("\n\n<UL>");
 		do {
 			buf.append("\n\t<LI> ");
-			network.send(buf, currentNode);
+			currentNode.send(buf, network);
 			buf.append(" </LI>");
 			currentNode = currentNode.nextNode_;
 		} while (currentNode != this);
@@ -153,10 +153,22 @@ public class Node {
 		buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<network>");
 		do {
 			buf.append("\n\t");
-			network.sendXML(buf, currentNode);
+			currentNode.sendXML(buf, network);
 			currentNode = currentNode.nextNode_;
 		} while (currentNode != this);
 		buf.append("\n</network>");
+	}
+
+	public void send(StringBuffer buf, Network network) {
+			buf.append("Node ");
+			buf.append(name_);
+			buf.append(" [Node]");
+	}
+
+	public void sendXML(StringBuffer buf, Network network) {
+			buf.append("<node>");
+			buf.append(name_);
+			buf.append("</node>");
 	}
 
 }

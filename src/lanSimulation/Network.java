@@ -329,52 +329,6 @@ public class Network {
 		return buf.toString();
 	}
 
-	public void send(StringBuffer buf, Node currentNode) {
-		switch (currentNode.type_) {
-		case Node.NODE:
-			buf.append("Node ");
-			buf.append(currentNode.name_);
-			buf.append(" [Node]");
-			break;
-		case Node.WORKSTATION:
-			buf.append("Workstation ");
-			buf.append(currentNode.name_);
-			buf.append(" [Workstation]");
-			break;
-		case Node.PRINTER:
-			buf.append("Printer ");
-			buf.append(currentNode.name_);
-			buf.append(" [Printer]");
-			break;
-		default:
-			buf.append("(Unexpected)");
-			break;
-		}
-	}
-	
-	public void sendXML(StringBuffer buf, Node currentNode) {
-		switch (currentNode.type_) {
-		case Node.NODE:
-			buf.append("<node>");
-			buf.append(currentNode.name_);
-			buf.append("</node>");
-			break;
-		case Node.WORKSTATION:
-			buf.append("<workstation>");
-			buf.append(currentNode.name_);
-			buf.append("</workstation>");
-			break;
-		case Node.PRINTER:
-			buf.append("<printer>");
-			buf.append(currentNode.name_);
-			buf.append("</printer>");
-			break;
-		default:
-			buf.append("<unknown></unknown>");
-			break;
-		}
-	}
-	
 	private boolean atDestination(Node currentNode, Packet packet) {
 		return !packet.destination_.equals(currentNode.name_);
 	}
