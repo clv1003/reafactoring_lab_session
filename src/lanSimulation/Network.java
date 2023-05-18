@@ -200,24 +200,11 @@ public class Network {
 		} catch (IOException exc) {
 			// just ignore
 		}
-		;
 
 		Node currentNode = firstNode_;
 		Packet packet = new Packet("BROADCAST", firstNode_.name_, firstNode_.name_);
-		do {
-			try {
-				report.write("\tNode '");
-				report.write(currentNode.name_);
-				report.write("' accepts broadcase packet.\n");
-				report.write("\tNode '");
-				report.write(currentNode.name_);
-				report.write("' passes packet on.\n");
-				report.flush();
-			} catch (IOException exc) {
-				// just ignore
-			}
-			currentNode = currentNode.nextNode_;
-		} while (atDestination(currentNode, packet));
+		
+		send(report, currentNode, packet);
 
 		try {
 			report.write(">>> Broadcast travelled whole token ring.\n\n");
@@ -225,6 +212,28 @@ public class Network {
 			// just ignore
 		}
 		return true;
+	}
+
+	private Node send(Writer report, Node currentNode, Packet packet) {
+		do {
+			logging(report, currentNode);
+			currentNode = currentNode.nextNode_;
+		} while (atDestination(currentNode, packet));
+		return currentNode;
+	}
+
+	private void logging(Writer report, Node currentNode) {
+		try {
+			report.write("\tNode '");
+			report.write(currentNode.name_);
+			report.write("' accepts broadcase packet.\n");
+			report.write("\tNode '");
+			report.write(currentNode.name_);
+			report.write("' passes packet on.\n");
+			report.flush();
+		} catch (IOException exc) {
+			// just ignore
+		}
 	}
 
 	
@@ -330,26 +339,7 @@ public class Network {
 		assert isInitialized();
 		Node currentNode = firstNode_;
 		do {
-			switch (currentNode.type_) {
-			case Node.NODE:
-				buf.append("Node ");
-				buf.append(currentNode.name_);
-				buf.append(" [Node]");
-				break;
-			case Node.WORKSTATION:
-				buf.append("Workstation ");
-				buf.append(currentNode.name_);
-				buf.append(" [Workstation]");
-				break;
-			case Node.PRINTER:
-				buf.append("Printer ");
-				buf.append(currentNode.name_);
-				buf.append(" [Printer]");
-				break;
-			default:
-				buf.append("(Unexpected)");
-				break;
-			}
+			send(buf, currentNode);
 			buf.append(" -> ");
 			currentNode = currentNode.nextNode_;
 		} while (currentNode != firstNode_);
@@ -370,27 +360,7 @@ public class Network {
 		buf.append("\n\n<UL>");
 		do {
 			buf.append("\n\t<LI> ");
-			switch (currentNode.type_) {
-			case Node.NODE:
-				buf.append("Node ");
-				buf.append(currentNode.name_);
-				buf.append(" [Node]");
-				break;
-			case Node.WORKSTATION:
-				buf.append("Workstation ");
-				buf.append(currentNode.name_);
-				buf.append(" [Workstation]");
-				break;
-			case Node.PRINTER:
-				buf.append("Printer ");
-				buf.append(currentNode.name_);
-				buf.append(" [Printer]");
-				break;
-			default:
-				buf.append("(Unexpected)");
-				break;
-			}
-			;
+			send(buf, currentNode);
 			buf.append(" </LI>");
 			currentNode = currentNode.nextNode_;
 		} while (currentNode != firstNode_);
@@ -410,29 +380,56 @@ public class Network {
 		buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<network>");
 		do {
 			buf.append("\n\t");
-			switch (currentNode.type_) {
-			case Node.NODE:
-				buf.append("<node>");
-				buf.append(currentNode.name_);
-				buf.append("</node>");
-				break;
-			case Node.WORKSTATION:
-				buf.append("<workstation>");
-				buf.append(currentNode.name_);
-				buf.append("</workstation>");
-				break;
-			case Node.PRINTER:
-				buf.append("<printer>");
-				buf.append(currentNode.name_);
-				buf.append("</printer>");
-				break;
-			default:
-				buf.append("<unknown></unknown>");
-				break;
-			}
+			sendXML(buf, currentNode);
 			currentNode = currentNode.nextNode_;
 		} while (currentNode != firstNode_);
 		buf.append("\n</network>");
+	}
+	
+	private void send(StringBuffer buf, Node currentNode) {
+		switch (currentNode.type_) {
+		case Node.NODE:
+			buf.append("Node ");
+			buf.append(currentNode.name_);
+			buf.append(" [Node]");
+			break;
+		case Node.WORKSTATION:
+			buf.append("Workstation ");
+			buf.append(currentNode.name_);
+			buf.append(" [Workstation]");
+			break;
+		case Node.PRINTER:
+			buf.append("Printer ");
+			buf.append(currentNode.name_);
+			buf.append(" [Printer]");
+			break;
+		default:
+			buf.append("(Unexpected)");
+			break;
+		}
+	}
+	
+	private void sendXML(StringBuffer buf, Node currentNode) {
+		switch (currentNode.type_) {
+		case Node.NODE:
+			buf.append("<node>");
+			buf.append(currentNode.name_);
+			buf.append("</node>");
+			break;
+		case Node.WORKSTATION:
+			buf.append("<workstation>");
+			buf.append(currentNode.name_);
+			buf.append("</workstation>");
+			break;
+		case Node.PRINTER:
+			buf.append("<printer>");
+			buf.append(currentNode.name_);
+			buf.append("</printer>");
+			break;
+		default:
+			buf.append("<unknown></unknown>");
+			break;
+		}
 	}
 	
 	private boolean atDestination(Node currentNode, Packet packet) {
