@@ -93,7 +93,7 @@ public class LANTests extends TestCase {
 		}
 	}
 
-	private void YOUMAYWANTTOtestCompareFiles() {
+	private void metodotestCompareFiles() {
 		String fName1 = "testCompare1.txt", fName2 = "testCompare2.txt", fName3 = "testCompare3.txt",
 				fName4 = "testCompare4.txt";
 		FileWriter f1, f2, f3, f4;
@@ -271,6 +271,7 @@ public class LANTests extends TestCase {
 			} catch (IOException exc) {
 			}
 		}
+
 		assertTrue("Generated output is not as expected ", compareFiles(generateOutputFName, expectedOutputFName));
 	}
 
