@@ -39,7 +39,7 @@ public class Network {
 	 * Holds a pointer to some "first" node in the token ring. Used to ensure that
 	 * various printing operations return expected behaviour.
 	 */
-	private Node firstNode_;
+	public Node firstNode_;
 	/**
 	 * Maps the names of workstations on the actual workstations. Used to initiate
 	 * the requests for the network.
@@ -325,68 +325,11 @@ public class Network {
 	public String toString() {
 		assert isInitialized();
 		StringBuffer buf = new StringBuffer(30 * workstations_.size());
-		printOn(buf);
+		firstNode_.printOn(this, buf);
 		return buf.toString();
 	}
 
-	/**
-	 * Write a printable representation of #receiver on the given #buf.
-	 * <p>
-	 * <strong>Precondition:</strong> isInitialized();
-	 * </p>
-	 */
-	public void printOn(StringBuffer buf) {
-		assert isInitialized();
-		Node currentNode = firstNode_;
-		do {
-			send(buf, currentNode);
-			buf.append(" -> ");
-			currentNode = currentNode.nextNode_;
-		} while (currentNode != firstNode_);
-		buf.append(" ... ");
-	}
-
-	/**
-	 * Write a HTML representation of #receiver on the given #buf.
-	 * <p>
-	 * <strong>Precondition:</strong> isInitialized();
-	 * </p>
-	 */
-	public void printHTMLOn(StringBuffer buf) {
-		assert isInitialized();
-
-		buf.append("<HTML>\n<HEAD>\n<TITLE>LAN Simulation</TITLE>\n</HEAD>\n<BODY>\n<H1>LAN SIMULATION</H1>");
-		Node currentNode = firstNode_;
-		buf.append("\n\n<UL>");
-		do {
-			buf.append("\n\t<LI> ");
-			send(buf, currentNode);
-			buf.append(" </LI>");
-			currentNode = currentNode.nextNode_;
-		} while (currentNode != firstNode_);
-		buf.append("\n\t<LI>...</LI>\n</UL>\n\n</BODY>\n</HTML>\n");
-	}
-
-	/**
-	 * Write an XML representation of #receiver on the given #buf.
-	 * <p>
-	 * <strong>Precondition:</strong> isInitialized();
-	 * </p>
-	 */
-	public void printXMLOn(StringBuffer buf) {
-		assert isInitialized();
-
-		Node currentNode = firstNode_;
-		buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<network>");
-		do {
-			buf.append("\n\t");
-			sendXML(buf, currentNode);
-			currentNode = currentNode.nextNode_;
-		} while (currentNode != firstNode_);
-		buf.append("\n</network>");
-	}
-	
-	private void send(StringBuffer buf, Node currentNode) {
+	public void send(StringBuffer buf, Node currentNode) {
 		switch (currentNode.type_) {
 		case Node.NODE:
 			buf.append("Node ");
@@ -409,7 +352,7 @@ public class Network {
 		}
 	}
 	
-	private void sendXML(StringBuffer buf, Node currentNode) {
+	public void sendXML(StringBuffer buf, Node currentNode) {
 		switch (currentNode.type_) {
 		case Node.NODE:
 			buf.append("<node>");
