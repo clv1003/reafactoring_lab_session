@@ -4,12 +4,12 @@ import lanSimulation.Network;
 
 public class WorkStation extends Node {
 
-	public WorkStation(byte type, String name, Node nextNode) {
-		super(type, name, nextNode);
+	public WorkStation(String name, Node nextNode) {
+		super(name, nextNode);
 	}
 	
-	public WorkStation(byte type, String name) {
-		super(type, name);
+	public WorkStation(String name) {
+		super(name);
 	}
 	
 	public void send(StringBuffer buf, Network network) {

@@ -4,12 +4,12 @@ import lanSimulation.Network;
 
 public class Printer extends Node {
 
-	public Printer(byte type, String name, Node nextNode) {
-		super(type, name, nextNode);
+	public Printer(String name, Node nextNode) {
+		super(name, nextNode);
 	}
 	
-	public Printer(byte type, String name) {
-		super(type, name);
+	public Printer(String name) {
+		super(name);
 	}
 	
 	public void send(StringBuffer buf, Network network) {
